@@ -1,6 +1,6 @@
 import { Outlet } from "react-router";
 import {Header} from "./Header";
-//import Footer from "./Footer";
+import { Footer } from "./Footer";
 
 const MainLayout = () => {
   return (
@@ -10,16 +10,11 @@ const MainLayout = () => {
       {/* 2. Header Sticky: Se queda pegado arriba al hacer scroll */}
      <Header />
 
-      <main className="grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="grow w-full">
         <Outlet /> 
       </main>
 
-      <footer className="w-full border-t border-border bg-card">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* <Footer /> */}
-          <p>footer</p>
-        </div>
-      </footer>
+      <Footer />
       
     </div>
   );

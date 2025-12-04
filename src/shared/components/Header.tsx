@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Link } from 'react-router';
-import { MenuIcon } from '../icons/MenuIcon';
-import { CloseIcon } from '../icons/CloseIcon';
-import { SunIcon } from '../icons/SunIcon';
-import { MoonIcon } from '../icons/MoonIcon';
-import { useTheme } from '../context/ThemeContext';
+import { MenuIcon } from '@shared/icons/MenuIcon';
+import { CloseIcon } from '@shared/icons/CloseIcon';
+import { SunIcon } from '@shared/icons/SunIcon';
+import { MoonIcon } from '@shared/icons/MoonIcon';
+import { useTheme } from '@shared/context/ThemeContext';
 
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
