@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { fetchCities } from '../services/cities.services'
 import type { City } from '../cities.types'
-export const useFechCities = () => {
+export const useFetchCities = () => {
     const [cities, setCities] = useState<City[]>([])
     const [loading, setLoading] = useState<boolean>(true)
     const [error, setError] = useState<string | null>(null)
@@ -18,4 +18,4 @@ export const useFechCities = () => {
     return { cities, loading, error }
 }
 
-export default useFechCities
+export default useFetchCities

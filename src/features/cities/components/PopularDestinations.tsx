@@ -1,8 +1,8 @@
-import { useFechCities } from "../hooks/useFechCities";
+import { useFetchCities } from "../hooks/useFechCities";
 
 export const PopularDestinations = () => {
 
-  const { cities, loading, error } = useFechCities();
+  const { cities, loading, error } = useFetchCities();
 
   if (loading) {
     return <div>Loading popular destinations...</div>;
