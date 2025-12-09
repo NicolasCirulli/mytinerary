@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router";
 import MainLayout from "@shared/components/MainLayout";
-import HomePage from "@pages/home";
-import CitiesPage from "@/features/cities/CitiesPage";
+import HomePage from "@pages/home/HomePage";
+import CitiesPage from "@pages/cities/CitiesPage";
 
 
 export const router = createBrowserRouter([
