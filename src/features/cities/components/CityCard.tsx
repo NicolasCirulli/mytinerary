@@ -1,10 +1,11 @@
+import { memo } from "react";
 import { Link } from "react-router";
 import type { City } from "../cities.types";
 interface CityCardProps {
   city: City;
 }
 
-export const CityCard = ({ city }: CityCardProps) => {
+export const CityCard = memo(({ city }: CityCardProps) => {
   return (
     <Link
       to={`/cities/${city._id}`}
@@ -24,4 +25,4 @@ export const CityCard = ({ city }: CityCardProps) => {
       </div>
     </Link>
   );
-};
+});
