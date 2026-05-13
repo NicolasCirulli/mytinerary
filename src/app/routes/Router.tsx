@@ -1,9 +1,10 @@
+import { lazy } from "react";
 import { createBrowserRouter } from "react-router";
 import MainLayout from "@shared/components/MainLayout";
 import HomePage from "@pages/home/HomePage";
-import CitiesPage from "@pages/cities/CitiesPage";
-import CityDetailsPage from "@pages/cities/CityDetailsPage";
-import LoginPage from "@/pages/login/LoginPage";
+const CitiesPage = lazy(() => import("@pages/cities/CitiesPage"));
+const CityDetailsPage = lazy(() => import("@pages/cities/CityDetailsPage"));
+const LoginPage = lazy(() => import("@pages/login/LoginPage"));
 
 export const router = createBrowserRouter([
   {

@@ -1,8 +1,9 @@
+import { Suspense } from "react";
 import { Outlet } from "react-router";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
 import { OrganizationSchema } from "@shared/seo/StructuredData";
-
+import { PageLoader } from "./PageLoader";
 const MainLayout = () => {
   return (
     <>
@@ -13,7 +14,9 @@ const MainLayout = () => {
       <div className="min-h-screen flex flex-col bg-background text-foreground transition-colors duration-300">
         <Header />
         <main id="main-content" className="grow w-full">
-          <Outlet /> 
+          <Suspense fallback={<PageLoader />}>
+            <Outlet />
+          </Suspense>
         </main>
         <Footer />
       </div>
