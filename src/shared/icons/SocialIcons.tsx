@@ -3,6 +3,7 @@ import React from 'react';
 export const FacebookIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
+    aria-hidden="true"
     width="24"
     height="24"
     viewBox="0 0 24 24"
@@ -20,6 +21,7 @@ export const FacebookIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => 
 export const InstagramIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
+    aria-hidden="true"
     width="24"
     height="24"
     viewBox="0 0 24 24"
@@ -39,6 +41,7 @@ export const InstagramIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) =>
 export const TwitterIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
+    aria-hidden="true"
     width="24"
     height="24"
     viewBox="0 0 24 24"
@@ -56,6 +59,7 @@ export const TwitterIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
 export const GithubIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
+    aria-hidden="true"
     width="24"
     height="24"
     viewBox="0 0 24 24"
