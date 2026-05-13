@@ -27,12 +27,12 @@ export const LoginForm: React.FC = () => {
   } = useLogin();
 
   return (
-    <div className="w-full max-w-md p-8 space-y-6 bg-white dark:bg-card rounded-2xl shadow-xl">
+    <div className="w-full max-w-md p-8 space-y-6 bg-card rounded-2xl shadow-xl border border-border">
       <div className="space-y-2 text-center">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+        <h1 className="text-3xl font-bold text-foreground">
           Welcome Back
         </h1>
-        <p className="text-gray-500 dark:text-gray-400">
+        <p className="text-muted-foreground">
           Enter your details to access your account
         </p>
       </div>
@@ -40,13 +40,13 @@ export const LoginForm: React.FC = () => {
       <form onSubmit={handleLogin} className="space-y-4">
         <div className="space-y-2">
           <label
-            className="text-sm font-medium text-gray-700 dark:text-gray-300"
+            className="text-sm font-medium text-foreground"
             htmlFor="email"
           >
             Email
           </label>
           <div className="relative">
-            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-500">
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-muted-foreground">
               <MailIcon className="w-5 h-5" />
             </div>
             <input
@@ -54,7 +54,7 @@ export const LoginForm: React.FC = () => {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 transition-colors"
+              className="w-full pl-10 pr-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent bg-muted/50 text-foreground placeholder:text-muted-foreground transition-colors"
               placeholder="name@company.com"
               required
             />
@@ -64,14 +64,14 @@ export const LoginForm: React.FC = () => {
         <div className="space-y-2">
           <div className="flex justify-between items-center">
             <label
-              className="text-sm font-medium text-gray-700 dark:text-gray-300"
+              className="text-sm font-medium text-foreground"
               htmlFor="password"
             >
               Password
             </label>
           </div>
           <div className="relative">
-            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-500">
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-muted-foreground">
               <LockIcon className="w-5 h-5" />
             </div>
             <input
@@ -79,14 +79,14 @@ export const LoginForm: React.FC = () => {
               type={showPassword ? "text" : "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full pl-10 pr-10 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 transition-colors"
+              className="w-full pl-10 pr-10 py-2 border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent bg-muted/50 text-foreground placeholder:text-muted-foreground transition-colors"
               placeholder="••••••••"
               required
             />
             <button
               type="button"
               onClick={togglePasswordVisibility}
-              className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none"
+              className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground hover:text-foreground focus:outline-none"
             >
               {showPassword ? (
                 <EyeOffIcon className="w-5 h-5" />
@@ -104,18 +104,18 @@ export const LoginForm: React.FC = () => {
               type="checkbox"
               checked={rememberMe}
               onChange={toggleRememberMe}
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded cursor-pointer"
+              className="h-4 w-4 text-primary focus:ring-ring border-border rounded cursor-pointer"
             />
             <label
               htmlFor="remember-me"
-              className="ml-2 block text-sm text-gray-700 dark:text-gray-300 cursor-pointer"
+              className="ml-2 block text-sm text-foreground cursor-pointer"
             >
               Remember me
             </label>
           </div>
           <Link
             to="/forgot-password"
-            className="text-sm font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
+            className="text-sm font-medium text-primary hover:text-primary/80"
           >
             Forgot password?
           </Link>
@@ -124,7 +124,7 @@ export const LoginForm: React.FC = () => {
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-primary-foreground bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
           {isLoading ? "Signing in..." : "Sign in"}
         </button>
@@ -132,10 +132,10 @@ export const LoginForm: React.FC = () => {
 
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
+          <div className="w-full border-t border-border"></div>
         </div>
         <div className="relative flex justify-center text-sm">
-          <span className="px-2 bg-white dark:bg-gray-800 text-gray-500">
+          <span className="px-2 bg-card text-muted-foreground">
             Or continue with
           </span>
         </div>
@@ -145,7 +145,7 @@ export const LoginForm: React.FC = () => {
         <button
           type="button"
           onClick={handleGoogleLogin}
-          className="flex items-center justify-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm bg-white dark:bg-gray-700 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+          className="flex items-center justify-center px-4 py-2 border border-border rounded-lg shadow-sm bg-card text-sm font-medium text-foreground hover:bg-muted focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring transition-colors"
         >
           <GoogleIcon className="w-5 h-5 mr-2" />
           Google
@@ -153,18 +153,18 @@ export const LoginForm: React.FC = () => {
         <button
           type="button"
           onClick={handleFacebookLogin}
-          className="flex items-center justify-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm bg-white dark:bg-gray-700 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+          className="flex items-center justify-center px-4 py-2 border border-border rounded-lg shadow-sm bg-card text-sm font-medium text-foreground hover:bg-muted focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring transition-colors"
         >
           <FacebookIcon className="w-5 h-5 mr-2 text-[#1877F2]" />
           Facebook
         </button>
       </div>
 
-      <p className="text-center text-sm text-gray-600 dark:text-gray-400">
+      <p className="text-center text-sm text-muted-foreground">
         Don't have an account?{" "}
         <Link
           to="/register"
-          className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
+          className="font-medium text-primary hover:text-primary/80"
         >
           Sign up
         </Link>
