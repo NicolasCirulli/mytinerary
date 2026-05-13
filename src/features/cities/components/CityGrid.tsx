@@ -15,8 +15,8 @@ export const CityGrid = ({ cities }: CityGridProps) => {
 
   return (
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-      {cities.map((city) => (
-        <CityCard key={city._id} city={city} />
+      {cities.map((city, index) => (
+        <CityCard key={city._id} city={city} index={index} />
       ))}
     </div>
   );
