@@ -25,7 +25,8 @@ api.interceptors.response.use(
     (error) => {
         if( error.response && error.response.status === 401 ) {
             localStorage.removeItem('token');
-            console.error('Unauthorized access');
+            console.warn('[API] Unauthorized - redirecting to login');
+            window.location.href = '/login';
         }
         return Promise.reject(error);
     }

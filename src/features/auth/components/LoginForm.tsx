@@ -9,6 +9,8 @@ import {
   GoogleIcon,
 } from "@shared/icons/AuthIcons";
 import { FacebookIcon } from "@shared/icons/SocialIcons";
+import { CloseIcon } from "@shared/icons/CloseIcon";
+import { AlertCircleIcon } from "@shared/icons/AlertIcons";
 
 export const LoginForm: React.FC = () => {
   const {
@@ -19,6 +21,8 @@ export const LoginForm: React.FC = () => {
     showPassword,
     rememberMe,
     isLoading,
+    error,
+    setError,
     togglePasswordVisibility,
     toggleRememberMe,
     handleLogin,
@@ -121,12 +125,34 @@ export const LoginForm: React.FC = () => {
           </Link>
         </div>
 
+        {error && (
+          <div className="flex items-center gap-2 rounded-lg border border-red-300 bg-red-50 dark:bg-red-950 dark:border-red-800 p-3 text-sm text-red-800 dark:text-red-200">
+            <AlertCircleIcon className="h-4 w-4 flex-shrink-0" />
+            <span className="flex-1">{error}</span>
+            <button
+              type="button"
+              onClick={() => setError(null)}
+              className="text-red-500 hover:text-red-700"
+            >
+              <CloseIcon className="h-4 w-4" />
+            </button>
+          </div>
+        )}
+
         <button
           type="submit"
           disabled={isLoading}
           className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-primary-foreground bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
-          {isLoading ? "Signing in..." : "Sign in"}
+          {isLoading ? (
+            <>
+              <svg aria-hidden="true" className="mr-2 h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+              </svg>
+              Signing in...
+            </>
+          ) : "Sign in"}
         </button>
       </form>
 
