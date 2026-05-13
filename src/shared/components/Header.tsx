@@ -5,7 +5,7 @@ import { MenuIcon } from '@shared/icons/MenuIcon';
 import { CloseIcon } from '@shared/icons/CloseIcon';
 import { SunIcon } from '@shared/icons/SunIcon';
 import { MoonIcon } from '@shared/icons/MoonIcon';
-import { useTheme } from '@shared/context/ThemeContext';
+import { useTheme } from '@shared/context/useTheme';
 
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
