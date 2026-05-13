@@ -7,9 +7,12 @@ const MainLayout = () => {
   return (
     <>
       <OrganizationSchema />
+      <a href="#main-content" className="skip-link">
+        Skip to main content
+      </a>
       <div className="min-h-screen flex flex-col bg-background text-foreground transition-colors duration-300">
         <Header />
-        <main className="grow w-full">
+        <main id="main-content" className="grow w-full">
           <Outlet /> 
         </main>
         <Footer />

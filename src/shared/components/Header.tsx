@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Link } from 'react-router';
 import { MenuIcon } from '@shared/icons/MenuIcon';
@@ -11,9 +11,60 @@ export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { theme, setTheme } = useTheme();
 
+  const toggleButtonRef = useRef<HTMLButtonElement>(null);
+  const drawerRef = useRef<HTMLDivElement>(null);
+
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const closeMenu = () => setIsMenuOpen(false);
   const toggleTheme = () => setTheme(theme === 'light' ? 'dark' : 'light');
+
+  // Focus trap for mobile drawer (WCAG 2.1.2)
+  useEffect(() => {
+    if (!isMenuOpen) return;
+
+    const drawer = drawerRef.current;
+    if (!drawer) return;
+
+    const focusableSelector = 'a, button, input, [tabindex]:not([tabindex="-1"])';
+    const focusableElements = drawer.querySelectorAll<HTMLElement>(focusableSelector);
+    const firstFocusable = focusableElements[0];
+    const lastFocusable = focusableElements[focusableElements.length - 1];
+
+    // Save active element and focus first item
+    const previousFocus = document.activeElement as HTMLElement;
+    firstFocusable?.focus();
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsMenuOpen(false);
+        return;
+      }
+
+      if (e.key === 'Tab') {
+        if (e.shiftKey) {
+          // Shift+Tab: if focus is on first element, go to last
+          if (document.activeElement === firstFocusable) {
+            e.preventDefault();
+            lastFocusable?.focus();
+          }
+        } else {
+          // Tab: if focus is on last element, go to first
+          if (document.activeElement === lastFocusable) {
+            e.preventDefault();
+            firstFocusable?.focus();
+          }
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      // Restore focus to toggle button when drawer closes
+      previousFocus?.focus();
+    };
+  }, [isMenuOpen]);
 
   const navLinks = [
     { name: 'Home', path: '/' },
@@ -76,6 +127,7 @@ export const Header = () => {
 
           {/* Mobile Menu Button */}
           <button
+            ref={toggleButtonRef}
             className="p-2 text-foreground hover:bg-muted rounded-md"
             onClick={toggleMenu}
             aria-label="Toggle menu"
@@ -99,6 +151,10 @@ export const Header = () => {
 
           {/* Drawer */}
           <div
+            ref={drawerRef}
+            role="dialog"
+            aria-modal={isMenuOpen}
+            aria-label="Navigation menu"
             className={`fixed inset-y-0 right-0 z-50 w-64 transform bg-card border-r border-border p-6 shadow-lg transition-transform duration-300 ease-in-out md:hidden ${
               isMenuOpen ? 'translate-x-0' : 'translate-x-full'
             }`}

@@ -3,6 +3,7 @@ import React from 'react';
 export const MapIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
+    aria-hidden="true"
     fill="none"
     viewBox="0 0 24 24"
     strokeWidth={1.5}
@@ -20,6 +21,7 @@ export const MapIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
 export const KeyIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
+    aria-hidden="true"
     fill="none"
     viewBox="0 0 24 24"
     strokeWidth={1.5}
@@ -37,6 +39,7 @@ export const KeyIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
 export const UsersIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
+    aria-hidden="true"
     fill="none"
     viewBox="0 0 24 24"
     strokeWidth={1.5}
