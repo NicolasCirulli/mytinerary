@@ -2,7 +2,7 @@ import { Link } from 'react-router';
 
 export const HeroSection = () => {
   return (
-    <section className="relative h-[80vh] w-full overflow-hidden">
+    <section className="relative h-[80vh] w-full overflow-hidden noise-overlay">
         {/* Background Image with Overlay */}
         <div className="absolute inset-0">
           <img
@@ -14,7 +14,7 @@ export const HeroSection = () => {
         </div>
 
         {/* Content */}
-        <div className="relative z-10 flex h-full flex-col items-center justify-center px-4 text-center">
+        <div className="relative z-10 flex h-full flex-col items-center justify-center px-4 text-center animate-fade-in-up">
           <h1 className="mb-4 text-4xl font-bold tracking-tight text-white sm:text-6xl lg:text-7xl drop-shadow-lg">
             Travel Like a Local
           </h1>

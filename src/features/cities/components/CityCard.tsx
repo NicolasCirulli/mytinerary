@@ -3,13 +3,16 @@ import { Link } from "react-router";
 import type { City } from "../cities.types";
 interface CityCardProps {
   city: City;
+  index?: number;
 }
 
-export const CityCard = memo(({ city }: CityCardProps) => {
+export const CityCard = memo(({ city, index = 0 }: CityCardProps) => {
+  const staggerClass = `stagger-${Math.min(index + 1, 5)}`;
+  
   return (
     <Link
       to={`/cities/${city._id}`}
-      className="block group relative aspect-3/4 overflow-hidden rounded-2xl cursor-pointer"
+      className={`block group relative aspect-3/4 overflow-hidden rounded-2xl cursor-pointer animate-fade-in-up ${staggerClass}`}
     >
       <img
         src={city.image}
