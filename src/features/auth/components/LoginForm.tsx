@@ -33,9 +33,7 @@ export const LoginForm: React.FC = () => {
   return (
     <div className="w-full max-w-md p-8 space-y-6 bg-card rounded-2xl shadow-xl border border-border">
       <div className="space-y-2 text-center">
-        <h1 className="text-3xl font-bold text-foreground">
-          Welcome Back
-        </h1>
+        <h1 className="text-3xl font-bold text-foreground">Welcome Back</h1>
         <p className="text-muted-foreground">
           Enter your details to access your account
         </p>
@@ -127,7 +125,7 @@ export const LoginForm: React.FC = () => {
 
         {error && (
           <div className="flex items-center gap-2 rounded-lg border border-red-300 bg-red-50 dark:bg-red-950 dark:border-red-800 p-3 text-sm text-red-800 dark:text-red-200">
-            <AlertCircleIcon className="h-4 w-4 flex-shrink-0" />
+            <AlertCircleIcon className="h-4 w-4 shrink-0" />
             <span className="flex-1">{error}</span>
             <button
               type="button"
@@ -146,13 +144,31 @@ export const LoginForm: React.FC = () => {
         >
           {isLoading ? (
             <>
-              <svg aria-hidden="true" className="mr-2 h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+              <svg
+                aria-hidden="true"
+                className="mr-2 h-4 w-4 animate-spin"
+                viewBox="0 0 24 24"
+                fill="none"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                />
               </svg>
               Signing in...
             </>
-          ) : "Sign in"}
+          ) : (
+            "Sign in"
+          )}
         </button>
       </form>
 
@@ -189,7 +205,7 @@ export const LoginForm: React.FC = () => {
       <p className="text-center text-sm text-muted-foreground">
         Don't have an account?{" "}
         <Link
-          to="/register"
+          to="/auth/register"
           className="font-medium text-primary hover:text-primary/80"
         >
           Sign up

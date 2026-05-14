@@ -1,5 +1,10 @@
-import { Link } from 'react-router';
-import { FacebookIcon, GithubIcon, InstagramIcon, TwitterIcon } from '@shared/icons/SocialIcons';
+import { Link } from "react-router";
+import {
+  FacebookIcon,
+  GithubIcon,
+  InstagramIcon,
+  TwitterIcon,
+} from "@shared/icons/SocialIcons";
 
 export const Footer = () => {
   return (
@@ -15,7 +20,8 @@ export const Footer = () => {
               <span className="text-xl font-bold">Mytinerary</span>
             </div>
             <p className="text-sm text-muted-foreground">
-              Find your perfect trip, designed by insiders who know and love their cities!
+              Find your perfect trip, designed by insiders who know and love
+              their cities!
             </p>
           </div>
 
@@ -29,17 +35,26 @@ export const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/cities" className="hover:text-primary transition-colors">
+                <Link
+                  to="/cities"
+                  className="hover:text-primary transition-colors"
+                >
                   Cities
                 </Link>
               </li>
               <li>
-                <Link to="/login" className="hover:text-primary transition-colors">
+                <Link
+                  to="/auth/login"
+                  className="hover:text-primary transition-colors"
+                >
                   Login
                 </Link>
               </li>
               <li>
-                <Link to="/register" className="hover:text-primary transition-colors">
+                <Link
+                  to="/auth/register"
+                  className="hover:text-primary transition-colors"
+                >
                   Register
                 </Link>
               </li>
@@ -106,7 +121,9 @@ export const Footer = () => {
 
         {/* Bottom Bar */}
         <div className="mt-12 border-t border-border pt-8 text-center text-sm text-muted-foreground">
-          <p>&copy; {new Date().getFullYear()} Mytinerary. All rights reserved.</p>
+          <p>
+            &copy; {new Date().getFullYear()} Mytinerary. All rights reserved.
+          </p>
         </div>
       </div>
     </footer>

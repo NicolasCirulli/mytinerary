@@ -1,39 +1,40 @@
-import React from 'react';
-import { Link } from 'react-router';
-import { useRegister } from '../hooks/useRegister';
+import React from "react";
+import { Link } from "react-router";
+import { useRegister } from "../hooks/useRegister";
 import {
   MailIcon,
   LockIcon,
   EyeIcon,
   EyeOffIcon,
   GoogleIcon,
-} from '@shared/icons/AuthIcons';
-import { FacebookIcon } from '@shared/icons/SocialIcons';
-import { CloseIcon } from '@shared/icons/CloseIcon';
-import { AlertCircleIcon } from '@shared/icons/AlertIcons';
+} from "@shared/icons/AuthIcons";
+import { FacebookIcon } from "@shared/icons/SocialIcons";
+import { CloseIcon } from "@shared/icons/CloseIcon";
+import { AlertCircleIcon } from "@shared/icons/AlertIcons";
 
+// Más adelante mover la lista al backcend y generar un endpoint
 const COUNTRIES = [
-  'Argentina',
-  'Australia',
-  'Brazil',
-  'Canada',
-  'Chile',
-  'China',
-  'Colombia',
-  'France',
-  'Germany',
-  'India',
-  'Italy',
-  'Japan',
-  'Mexico',
-  'Netherlands',
-  'New Zealand',
-  'Peru',
-  'Portugal',
-  'Spain',
-  'United Kingdom',
-  'United States',
-  'Uruguay',
+  "Argentina",
+  "Australia",
+  "Brazil",
+  "Canada",
+  "Chile",
+  "China",
+  "Colombia",
+  "France",
+  "Germany",
+  "India",
+  "Italy",
+  "Japan",
+  "Mexico",
+  "Netherlands",
+  "New Zealand",
+  "Peru",
+  "Portugal",
+  "Spain",
+  "United Kingdom",
+  "United States",
+  "Uruguay",
 ];
 
 export const RegisterForm: React.FC = () => {
@@ -68,9 +69,7 @@ export const RegisterForm: React.FC = () => {
   return (
     <div className="w-full max-w-md p-8 space-y-6 bg-card rounded-2xl shadow-xl border border-border">
       <div className="space-y-2 text-center">
-        <h1 className="text-3xl font-bold text-foreground">
-          Create Account
-        </h1>
+        <h1 className="text-3xl font-bold text-foreground">Create Account</h1>
         <p className="text-muted-foreground">
           Fill in your details to get started
         </p>
@@ -79,7 +78,10 @@ export const RegisterForm: React.FC = () => {
       <form onSubmit={handleRegister} className="space-y-4">
         {/* First Name */}
         <div className="space-y-2">
-          <label className="text-sm font-medium text-foreground" htmlFor="firstName">
+          <label
+            className="text-sm font-medium text-foreground"
+            htmlFor="firstName"
+          >
             First Name
           </label>
           <input
@@ -98,7 +100,10 @@ export const RegisterForm: React.FC = () => {
 
         {/* Last Name */}
         <div className="space-y-2">
-          <label className="text-sm font-medium text-foreground" htmlFor="lastName">
+          <label
+            className="text-sm font-medium text-foreground"
+            htmlFor="lastName"
+          >
             Last Name
           </label>
           <input
@@ -117,7 +122,10 @@ export const RegisterForm: React.FC = () => {
 
         {/* Email */}
         <div className="space-y-2">
-          <label className="text-sm font-medium text-foreground" htmlFor="register-email">
+          <label
+            className="text-sm font-medium text-foreground"
+            htmlFor="register-email"
+          >
             Email
           </label>
           <div className="relative">
@@ -141,7 +149,10 @@ export const RegisterForm: React.FC = () => {
 
         {/* Password */}
         <div className="space-y-2">
-          <label className="text-sm font-medium text-foreground" htmlFor="register-password">
+          <label
+            className="text-sm font-medium text-foreground"
+            htmlFor="register-password"
+          >
             Password
           </label>
           <div className="relative">
@@ -150,7 +161,7 @@ export const RegisterForm: React.FC = () => {
             </div>
             <input
               id="register-password"
-              type={showPassword ? 'text' : 'password'}
+              type={showPassword ? "text" : "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full pl-10 pr-10 py-2 border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent bg-muted/50 text-foreground placeholder:text-muted-foreground transition-colors"
@@ -176,7 +187,10 @@ export const RegisterForm: React.FC = () => {
 
         {/* Confirm Password */}
         <div className="space-y-2">
-          <label className="text-sm font-medium text-foreground" htmlFor="confirmPassword">
+          <label
+            className="text-sm font-medium text-foreground"
+            htmlFor="confirmPassword"
+          >
             Confirm Password
           </label>
           <div className="relative">
@@ -185,7 +199,7 @@ export const RegisterForm: React.FC = () => {
             </div>
             <input
               id="confirmPassword"
-              type={showConfirmPassword ? 'text' : 'password'}
+              type={showConfirmPassword ? "text" : "password"}
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               className="w-full pl-10 pr-10 py-2 border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent bg-muted/50 text-foreground placeholder:text-muted-foreground transition-colors"
@@ -208,7 +222,10 @@ export const RegisterForm: React.FC = () => {
 
         {/* Country */}
         <div className="space-y-2">
-          <label className="text-sm font-medium text-foreground" htmlFor="country">
+          <label
+            className="text-sm font-medium text-foreground"
+            htmlFor="country"
+          >
             Country
           </label>
           <select
@@ -234,7 +251,10 @@ export const RegisterForm: React.FC = () => {
 
         {/* Description (optional) */}
         <div className="space-y-2">
-          <label className="text-sm font-medium text-foreground" htmlFor="description">
+          <label
+            className="text-sm font-medium text-foreground"
+            htmlFor="description"
+          >
             Description
           </label>
           <textarea
@@ -249,7 +269,10 @@ export const RegisterForm: React.FC = () => {
 
         {/* Image URL (optional) */}
         <div className="space-y-2">
-          <label className="text-sm font-medium text-foreground" htmlFor="image">
+          <label
+            className="text-sm font-medium text-foreground"
+            htmlFor="image"
+          >
             Image URL
           </label>
           <input
@@ -285,13 +308,31 @@ export const RegisterForm: React.FC = () => {
         >
           {isLoading ? (
             <>
-              <svg aria-hidden="true" className="mr-2 h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+              <svg
+                aria-hidden="true"
+                className="mr-2 h-4 w-4 animate-spin"
+                viewBox="0 0 24 24"
+                fill="none"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                />
               </svg>
               Creating account...
             </>
-          ) : 'Create account'}
+          ) : (
+            "Create account"
+          )}
         </button>
       </form>
 
@@ -309,7 +350,7 @@ export const RegisterForm: React.FC = () => {
       <div className="grid grid-cols-2 gap-3">
         <button
           type="button"
-          onClick={() => console.log('Sign up with Google')}
+          onClick={() => console.log("Sign up with Google")}
           className="flex items-center justify-center px-4 py-2 border border-border rounded-lg shadow-sm bg-card text-sm font-medium text-foreground hover:bg-muted focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring transition-colors"
         >
           <GoogleIcon className="w-5 h-5 mr-2" />
@@ -317,7 +358,7 @@ export const RegisterForm: React.FC = () => {
         </button>
         <button
           type="button"
-          onClick={() => console.log('Sign up with Facebook')}
+          onClick={() => console.log("Sign up with Facebook")}
           className="flex items-center justify-center px-4 py-2 border border-border rounded-lg shadow-sm bg-card text-sm font-medium text-foreground hover:bg-muted focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring transition-colors"
         >
           <FacebookIcon className="w-5 h-5 mr-2 text-[#1877F2]" />
@@ -326,9 +367,9 @@ export const RegisterForm: React.FC = () => {
       </div>
 
       <p className="text-center text-sm text-muted-foreground">
-        Already have an account?{' '}
+        Already have an account?{" "}
         <Link
-          to="/login"
+          to="/auth/login"
           className="font-medium text-primary hover:text-primary/80"
         >
           Sign in
