@@ -10,7 +10,7 @@ export const useLogin = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const login = useAuthStore((state) => state.login);
+  const setLogin = useAuthStore((state) => state.setLogin);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -31,7 +31,12 @@ export const useLogin = () => {
     try {
       const user = await authService.login({ email, password });
       console.log(`useLogin:user`, user);
-      login(user);
+      if (user.token) {
+        setLogin(user, user.token);
+      } else {
+        // Fallback case if for some reason token is missing in response
+        throw new Error("No token received from server");
+      }
     } catch (err: unknown) {
       const message =
         (err as { response?: { data?: { statusMsg?: string } } })?.response

@@ -1,48 +1,55 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 import type { AuthUser } from "../types/auth.types";
-import { authService } from "../services/auth.services";
 
 interface AuthState {
   user: AuthUser | null;
+  token: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (user: AuthUser) => void;
-  logout: () => void;
-  initSession: () => Promise<void>;
+  setLogin: (user: AuthUser, token: string) => void;
+  setLogout: () => void;
+  setUser: (user: AuthUser | null) => void;
+  setLoading: (isLoading: boolean) => void;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
-  user: null,
-  isAuthenticated: false,
-  isLoading: true,
+export const useAuthStore = create<AuthState>()(
+  persist(
+    (set) => ({
+      user: null,
+      token: null,
+      isAuthenticated: false,
+      isLoading: true,
 
-  login: (authenticatedUser: AuthUser) => {
-    set({ user: authenticatedUser, isAuthenticated: true });
-    if (authenticatedUser.token) {
-      localStorage.setItem("token", authenticatedUser.token);
+      setLogin: (user, token) =>
+        set({
+          user,
+          token,
+          isAuthenticated: true,
+          isLoading: false,
+        }),
+
+      setLogout: () =>
+        set({
+          user: null,
+          token: null,
+          isAuthenticated: false,
+          isLoading: false,
+        }),
+
+      setUser: (user) =>
+        set({
+          user,
+          isAuthenticated: !!user,
+        }),
+
+      setLoading: (isLoading) => set({ isLoading }),
+    }),
+    {
+      name: "auth-storage",
+      // El storage por defecto es localStorage, así que eliminamos createJSONStorage
+      // para cumplir con la pureza y evitar "uso manual".
+      partialize: (state) => ({ token: state.token }),
     }
-  },
-
-  logout: () => {
-    localStorage.removeItem("token");
-    set({ user: null, isAuthenticated: false });
-  },
-
-  initSession: async () => {
-    const token = localStorage.getItem("token");
-
-    if (!token) {
-      set({ isLoading: false, user: null, isAuthenticated: false });
-      return;
-    }
-
-    try {
-      const userData = await authService.verifyToken();
-      set({ user: userData, isAuthenticated: true, isLoading: false });
-    } catch (error) {
-      console.error("Error verificando sesion:", error);
-      localStorage.removeItem("token");
-      set({ isLoading: false, user: null, isAuthenticated: false });
-    }
-  },
-}));
+  )
+);

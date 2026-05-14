@@ -1,15 +1,6 @@
-import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { useAuthStore } from '../auth.store';
-import { authService } from '../../services/auth.services';
 import type { AuthUser } from '../../types/auth.types';
-
-vi.mock('../../services/auth.services', () => ({
-  authService: {
-    verifyToken: vi.fn(),
-  },
-}));
-
-const mockVerifyToken = authService.verifyToken as Mock;
 
 const mockAuthUser: AuthUser = {
   _id: '64abc123',
@@ -22,92 +13,63 @@ const mockAuthUser: AuthUser = {
   token: 'jwt-token-123',
 };
 
-describe('auth.store', () => {
+describe('auth.store (Refactored)', () => {
   beforeEach(() => {
     localStorage.clear();
     vi.clearAllMocks();
-    useAuthStore.setState({
-      user: null,
-      isAuthenticated: false,
-      isLoading: true,
-    });
+    useAuthStore.getState().setLogout();
+    // Reset intentional loading state for tests
+    useAuthStore.setState({ isLoading: true });
   });
 
   it('should have initial state', () => {
     const state = useAuthStore.getState();
     expect(state.user).toBeNull();
+    expect(state.token).toBeNull();
     expect(state.isAuthenticated).toBe(false);
     expect(state.isLoading).toBe(true);
   });
 
-  describe('login', () => {
-    it('should set user and save token to localStorage', () => {
-      useAuthStore.getState().login(mockAuthUser);
+  describe('setLogin', () => {
+    it('should set user, token and mark as authenticated', () => {
+      useAuthStore.getState().setLogin(mockAuthUser, 'new-token');
       
       const state = useAuthStore.getState();
       expect(state.user).toEqual(mockAuthUser);
+      expect(state.token).toBe('new-token');
       expect(state.isAuthenticated).toBe(true);
-      expect(localStorage.getItem('token')).toBe('jwt-token-123');
-    });
-
-    it('should not save token if user does not have one', () => {
-      const userWithoutToken = { ...mockAuthUser, token: undefined };
-      useAuthStore.getState().login(userWithoutToken);
+      expect(state.isLoading).toBe(false);
       
-      expect(localStorage.getItem('token')).toBeNull();
+      // Verify persistence (managed by middleware)
+      const stored = JSON.parse(localStorage.getItem('auth-storage') || '{}');
+      expect(stored.state.token).toBe('new-token');
     });
   });
 
-  describe('logout', () => {
-    it('should clear user and remove token from localStorage', () => {
-      localStorage.setItem('token', 'some-token');
-      useAuthStore.setState({ user: mockAuthUser, isAuthenticated: true });
-
-      useAuthStore.getState().logout();
+  describe('setLogout', () => {
+    it('should clear all auth data', () => {
+      useAuthStore.getState().setLogin(mockAuthUser, 'some-token');
+      useAuthStore.getState().setLogout();
 
       const state = useAuthStore.getState();
       expect(state.user).toBeNull();
+      expect(state.token).toBeNull();
       expect(state.isAuthenticated).toBe(false);
-      expect(localStorage.getItem('token')).toBeNull();
+      
+      const stored = JSON.parse(localStorage.getItem('auth-storage') || '{}');
+      expect(stored.state.token).toBeNull();
     });
   });
 
-  describe('initSession', () => {
-    it('should set isLoading=false if no token in localStorage', async () => {
-      await useAuthStore.getState().initSession();
+  describe('setUser', () => {
+    it('should update user and derive isAuthenticated', () => {
+      useAuthStore.getState().setUser(mockAuthUser);
+      expect(useAuthStore.getState().isAuthenticated).toBe(true);
+      expect(useAuthStore.getState().user).toEqual(mockAuthUser);
 
-      const state = useAuthStore.getState();
-      expect(state.isLoading).toBe(false);
-      expect(state.user).toBeNull();
-      expect(state.isAuthenticated).toBe(false);
-      expect(mockVerifyToken).not.toHaveBeenCalled();
-    });
-
-    it('should verify valid token and set user', async () => {
-      localStorage.setItem('token', 'valid-token');
-      mockVerifyToken.mockResolvedValue(mockAuthUser);
-
-      await useAuthStore.getState().initSession();
-
-      const state = useAuthStore.getState();
-      expect(mockVerifyToken).toHaveBeenCalled();
-      expect(state.user).toEqual(mockAuthUser);
-      expect(state.isAuthenticated).toBe(true);
-      expect(state.isLoading).toBe(false);
-    });
-
-    it('should clear invalid token on failure', async () => {
-      localStorage.setItem('token', 'expired-token');
-      mockVerifyToken.mockRejectedValue(new Error('Invalid token'));
-
-      await useAuthStore.getState().initSession();
-
-      const state = useAuthStore.getState();
-      expect(mockVerifyToken).toHaveBeenCalled();
-      expect(localStorage.getItem('token')).toBeNull();
-      expect(state.user).toBeNull();
-      expect(state.isAuthenticated).toBe(false);
-      expect(state.isLoading).toBe(false);
+      useAuthStore.getState().setUser(null);
+      expect(useAuthStore.getState().isAuthenticated).toBe(false);
+      expect(useAuthStore.getState().user).toBeNull();
     });
   });
 });
