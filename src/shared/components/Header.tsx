@@ -314,7 +314,7 @@ export const Header = () => {
                     <span className="text-sm font-medium text-foreground">
                       {user.first_name} {user.last_name}
                     </span>
-                    <span className="text-xs text-muted-foreground truncate max-w-[160px]">
+                    <span className="text-xs text-muted-foreground truncate max-w-40">
                       {user.email}
                     </span>
                   </div>
