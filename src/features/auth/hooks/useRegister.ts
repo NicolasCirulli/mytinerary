@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { authService } from '../services/auth.services';
-import { useAuthSession } from './useAuthSession';
+import { useAuthStore } from '../store/auth.store';
 
 export const useRegister = () => {
   const [firstName, setFirstName] = useState('');
@@ -17,7 +17,7 @@ export const useRegister = () => {
   const [error, setError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
-  const { login } = useAuthSession();
+  const login = useAuthStore((state) => state.login);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);

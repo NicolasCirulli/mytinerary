@@ -14,8 +14,8 @@ vi.mock('../../services/auth.services', () => ({
 
 const mockLoginFn = vi.fn();
 
-vi.mock('../useAuthSession', () => ({
-  useAuthSession: vi.fn(() => ({
+vi.mock('../../store/auth.store', () => ({
+  useAuthStore: vi.fn((selector) => selector({
     login: mockLoginFn,
     user: null,
     isAuthenticated: false,
