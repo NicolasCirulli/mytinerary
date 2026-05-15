@@ -1,12 +1,17 @@
-import API from "@shared/api/api";
-import type { AxiosCityResponse, City } from "../cities.types";
+import api from "@shared/api/api";
+import type { City, ApiResponse } from "@shared/types/api.types";
 
-export const fetchCities = async (): Promise<City[]> => {
-  const response: AxiosCityResponse = await API.get("/cities");
-  return response.data;
-};
-
-export const fetchCityById = async (id: string): Promise<City> => {
-  const response = await API.get(`/cities/${id}`);
-  return response.data;
+export const citiesService = {
+  getAllCities: async (): Promise<City[]> => {
+    const response = await api.get<never, ApiResponse<City[]>>("/cities");
+    return response.data;
+  },
+  getCityById: async (id: string): Promise<City> => {
+    const response = await api.get<never, ApiResponse<City>>(`/cities/${id}`);
+    return response.data;
+  },
+  updateCity: async (id: string, data: Partial<City>): Promise<City> => {
+    const response = await api.put<never, ApiResponse<City>>(`/cities/${id}`, data);
+    return response.data;
+  },
 };

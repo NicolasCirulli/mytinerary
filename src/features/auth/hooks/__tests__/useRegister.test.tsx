@@ -12,15 +12,15 @@ vi.mock('../../services/auth.services', () => ({
   },
 }));
 
-const mockLoginFn = vi.fn();
+const mockSetLoginFn = vi.fn();
 
 vi.mock('../../store/auth.store', () => ({
   useAuthStore: vi.fn((selector) => selector({
-    login: mockLoginFn,
+    setLogin: mockSetLoginFn,
     user: null,
     isAuthenticated: false,
     isLoading: false,
-    logout: vi.fn(),
+    setLogout: vi.fn(),
   })),
 }));
 
@@ -142,8 +142,8 @@ describe('useRegister', () => {
         description: undefined,
         image: undefined,
       });
-      // localStorage is set by AuthSessionContext.login, not by the hook
-      expect(mockLoginFn).toHaveBeenCalledWith(mockAuthUser);
+      
+      expect(mockSetLoginFn).toHaveBeenCalledWith(mockAuthUser, mockAuthUser.token);
       expect(result.current.isLoading).toBe(false);
       expect(result.current.error).toBeNull();
     });

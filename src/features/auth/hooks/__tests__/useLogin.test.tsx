@@ -12,15 +12,15 @@ vi.mock('../../services/auth.services', () => ({
   },
 }));
 
-const mockLoginFn = vi.fn();
+const mockSetLoginFn = vi.fn();
 
 vi.mock('../../store/auth.store', () => ({
   useAuthStore: vi.fn((selector) => selector({
-    login: mockLoginFn,
+    setLogin: mockSetLoginFn,
     user: null,
     isAuthenticated: false,
     isLoading: false,
-    logout: vi.fn(),
+    setLogout: vi.fn(),
   })),
 }));
 
@@ -117,8 +117,8 @@ describe('useLogin', () => {
         email: 'john@example.com',
         password: 'password123',
       });
-      // localStorage is set by AuthSessionContext login, not by the hook
-      expect(mockLoginFn).toHaveBeenCalledWith(mockAuthUser);
+      
+      expect(mockSetLoginFn).toHaveBeenCalledWith(mockAuthUser, mockAuthUser.token);
       expect(result.current.isLoading).toBe(false);
       expect(result.current.error).toBeNull();
     });
@@ -138,7 +138,7 @@ describe('useLogin', () => {
       });
 
       expect(result.current.error).toBe('Email or password is incorrect');
-      expect(mockLoginFn).not.toHaveBeenCalled();
+      expect(mockSetLoginFn).not.toHaveBeenCalled();
     });
 
     it('should set fallback error message when no statusMsg', async () => {

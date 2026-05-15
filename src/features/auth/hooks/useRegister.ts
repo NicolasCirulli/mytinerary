@@ -17,7 +17,7 @@ export const useRegister = () => {
   const [error, setError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
-  const login = useAuthStore((state) => state.login);
+  const setLogin = useAuthStore((state) => state.setLogin);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -56,7 +56,12 @@ export const useRegister = () => {
         description: description || undefined,
         image: image || undefined,
       });
-      login(user);
+      
+      if (user.token) {
+        setLogin(user, user.token);
+      } else {
+        throw new Error("No token received from server");
+      }
     } catch (err: unknown) {
       const axiosError = err as {
         response?: {

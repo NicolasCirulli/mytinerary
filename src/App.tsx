@@ -1,14 +1,9 @@
 import { RouterProvider } from "react-router"
 import { router } from "./app/routes/Router"
-import { useEffect } from "react"
-import { useAuthStore } from "./features/auth/store/auth.store"
+import { useAuthInitialize } from "./features/auth/hooks/useAuthInitialize"
 
 function App() {
-  const initSession = useAuthStore((state) => state.initSession)
-
-  useEffect(() => {
-    initSession()
-  }, [initSession])
+  useAuthInitialize()
 
   return (
     <RouterProvider router={router} />

@@ -12,6 +12,7 @@ import {
   LogInIcon,
   UserPlusIcon,
   LogOutIcon,
+  ShieldIcon,
 } from "@shared/icons/NavIcons";
 import { useTheme } from "@shared/context/useTheme";
 import { useAuthStore } from "@features/auth/store/auth.store";
@@ -32,10 +33,10 @@ export const Header = () => {
 
   const user = useAuthStore((state) => state.user);
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const logout = useAuthStore((state) => state.logout);
+  const setLogout = useAuthStore((state) => state.setLogout);
 
   const handleLogout = () => {
-    logout();
+    setLogout();
     setIsProfileMenuOpen(false);
     navigate("/auth/login");
   };
@@ -81,13 +82,13 @@ export const Header = () => {
 
       if (e.key === "Tab") {
         if (e.shiftKey) {
-          // Shift+Tab: if focus is on first element, go to last
+          // Shift+Tab: if focus on first element, go to last
           if (document.activeElement === firstFocusable) {
             e.preventDefault();
             lastFocusable?.focus();
           }
         } else {
-          // Tab: if focus is on last element, go to first
+          // Tab: if focus on last element, go to first
           if (document.activeElement === lastFocusable) {
             e.preventDefault();
             firstFocusable?.focus();
@@ -111,7 +112,12 @@ export const Header = () => {
   ];
 
   const authLinks = isAuthenticated
-    ? [{ name: "Profile", path: "/profile", icon: UserIcon }]
+    ? [
+        { name: "Profile", path: "/profile", icon: UserIcon },
+        ...(user?.role === "admin"
+          ? [{ name: "Admin", path: "/admin", icon: ShieldIcon }]
+          : []),
+      ]
     : [
         { name: "Login", path: "/auth/login", icon: LogInIcon },
         { name: "Register", path: "/auth/register", icon: UserPlusIcon },
@@ -200,14 +206,17 @@ export const Header = () => {
                     </p>
                   </div>
                   <div className="py-1">
-                    <Link
-                      to="/profile"
-                      className="flex items-center gap-2 px-4 py-2 text-sm text-foreground hover:bg-muted"
-                      onClick={() => setIsProfileMenuOpen(false)}
-                    >
-                      <UserIcon className="h-4 w-4" />
-                      Profile
-                    </Link>
+                    {authLinks.map((link) => (
+                      <Link
+                        key={link.name}
+                        to={link.path}
+                        className="flex items-center gap-2 px-4 py-2 text-sm text-foreground hover:bg-muted"
+                        onClick={() => setIsProfileMenuOpen(false)}
+                      >
+                        <link.icon className="h-4 w-4" />
+                        {link.name}
+                      </Link>
+                    ))}
                   </div>
                   <div className="py-1">
                     <button
@@ -314,7 +323,7 @@ export const Header = () => {
                     <span className="text-sm font-medium text-foreground">
                       {user.first_name} {user.last_name}
                     </span>
-                    <span className="text-xs text-muted-foreground truncate max-w-[160px]">
+                    <span className="text-xs text-muted-foreground truncate max-w-40">
                       {user.email}
                     </span>
                   </div>
