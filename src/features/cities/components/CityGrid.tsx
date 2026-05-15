@@ -4,6 +4,19 @@ interface CityGridProps {
   cities: City[];
 }
 
+// Bento pattern: within each group of 6 cards, items at position 0 and 3
+// span 2 columns to create visual variety. The first card also spans 2 rows.
+const getBentoClass = (indexInGroup: number): string => {
+  switch (indexInGroup) {
+    case 0:
+      return 'sm:col-span-2 sm:row-span-2';
+    case 3:
+      return 'sm:col-span-2';
+    default:
+      return '';
+  }
+};
+
 export const CityGrid = ({ cities }: CityGridProps) => {
   if (cities.length === 0) {
     return (
@@ -14,10 +27,17 @@ export const CityGrid = ({ cities }: CityGridProps) => {
   }
 
   return (
-    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-      {cities.map((city, index) => (
-        <CityCard key={city._id} city={city} index={index} />
-      ))}
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 auto-rows-[280px]">
+      {cities.map((city, index) => {
+        const indexInGroup = index % 6;
+        const bentoClass = getBentoClass(indexInGroup);
+
+        return (
+          <div key={city._id} className={bentoClass}>
+            <CityCard city={city} index={index} />
+          </div>
+        );
+      })}
     </div>
   );
 };
