@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import type { InternalAxiosRequestConfig } from 'axios';
 import api from '../api';
 import { useAuthStore } from '@features/auth/store/auth.store';
 
@@ -7,7 +8,9 @@ const mockLocation = {
   href: 'http://localhost:5173/',
   pathname: '/',
 };
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 delete (window as any).location;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 window.location = mockLocation as any;
 
 describe('Axios Interceptors (Isolated)', () => {
@@ -23,7 +26,7 @@ describe('Axios Interceptors (Isolated)', () => {
     it('should add Authorization header from store state', async () => {
       useAuthStore.setState({ token: 'store-token', isAuthenticated: true });
       
-      let capturedConfig: any;
+      let capturedConfig: InternalAxiosRequestConfig;
       api.defaults.adapter = async (config) => {
           capturedConfig = config;
           return { data: {}, status: 200, statusText: 'OK', headers: {}, config };
@@ -31,14 +34,14 @@ describe('Axios Interceptors (Isolated)', () => {
 
       await api.get('/test');
 
-      const authHeader = capturedConfig.headers.Authorization || capturedConfig.headers.get?.('Authorization');
+      const authHeader = capturedConfig!.headers.Authorization || capturedConfig!.headers.get?.('Authorization');
       expect(authHeader).toBe('Bearer store-token');
     });
 
     it('should NOT add Authorization header if store token is null', async () => {
       useAuthStore.setState({ token: null, isAuthenticated: false });
       
-      let capturedConfig: any;
+      let capturedConfig: InternalAxiosRequestConfig;
       api.defaults.adapter = async (config) => {
           capturedConfig = config;
           return { data: {}, status: 200, statusText: 'OK', headers: {}, config };
@@ -46,7 +49,7 @@ describe('Axios Interceptors (Isolated)', () => {
 
       await api.get('/test');
 
-      const authHeader = capturedConfig.headers.Authorization || capturedConfig.headers.get?.('Authorization');
+      const authHeader = capturedConfig!.headers.Authorization || capturedConfig!.headers.get?.('Authorization');
       expect(authHeader).toBeUndefined();
     });
   });
@@ -63,7 +66,7 @@ describe('Axios Interceptors (Isolated)', () => {
 
       try {
         await api.get('/protected');
-      } catch (err) {
+      } catch {
         // expected
       }
 
