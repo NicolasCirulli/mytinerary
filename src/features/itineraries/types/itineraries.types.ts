@@ -11,3 +11,14 @@ export interface Itinerary {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   city: string | any; // ID o Ciudad populada
 }
+
+export interface CreateItineraryData {
+  title: string;
+  price: number;
+  guide: string;
+  duration: number;
+  hashtags?: string[];
+  guide_image: string;
+  description: string;
+  activities?: string[];
+}

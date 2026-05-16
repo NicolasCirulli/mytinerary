@@ -1,10 +1,12 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 import { useCities } from '@features/cities/hooks/useCities';
 import { useCityItineraries } from '@features/itineraries/hooks/useCityItineraries';
 import { useUpdateItinerary } from '@features/itineraries/hooks/useUpdateItinerary';
-import type { Itinerary } from '@features/itineraries/types/itineraries.types';
+import { useCreateItinerary } from '@features/itineraries/hooks/useCreateItinerary';
+import type { Itinerary, CreateItineraryData } from '@features/itineraries/types/itineraries.types';
 
 const ITEMS_PER_PAGE = 3;
+type Mode = 'list' | 'edit' | 'create';
 
 // --- Icons ---
 
@@ -45,10 +47,24 @@ export const AdminItineraries = () => {
 
   const { data: itineraries, isPending: loadingItineraries } = useCityItineraries(selectedCityId || undefined);
   const { mutate: updateItinerary, isPending: isUpdating } = useUpdateItinerary();
+  const { mutate: createItinerary, isPending: isCreating } = useCreateItinerary();
 
+  const [mode, setMode] = useState<Mode>('list');
+  const [createCityId, setCreateCityId] = useState<string>('');
   const [editingItinerary, setEditingItinerary] = useState<Itinerary | null>(null);
   const [formData, setFormData] = useState<Partial<Itinerary>>({});
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const messageTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Cleanup timer on unmount
+  useEffect(() => {
+    return () => {
+      if (messageTimerRef.current) {
+        clearTimeout(messageTimerRef.current);
+      }
+    };
+  }, []);
+
   const [currentPage, setCurrentPage] = useState(1);
 
   const itineraryList = itineraries || [];
@@ -59,6 +75,7 @@ export const AdminItineraries = () => {
   }, [itineraryList, currentPage]);
 
   const handleEdit = (itinerary: Itinerary) => {
+    setMode('edit');
     setEditingItinerary(itinerary);
     setFormData({
       title: itinerary.title,
@@ -72,9 +89,56 @@ export const AdminItineraries = () => {
   };
 
   const handleCancel = () => {
+    setMode('list');
     setEditingItinerary(null);
     setFormData({});
     setMessage(null);
+  };
+
+  const handleCreateNew = () => {
+    setMode('create');
+    setFormData({});
+    setMessage(null);
+    setCreateCityId('');
+  };
+
+  const handleCreateSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!formData.title?.trim() || !formData.guide?.trim()) {
+      setMessage({ type: 'error', text: 'Title and Guide are required.' });
+      return;
+    }
+
+    const cityIdToUse = selectedCityId || createCityId;
+    if (!cityIdToUse) return;
+
+    const data: CreateItineraryData = {
+      title: formData.title || '',
+      price: formData.price ?? 1,
+      guide: formData.guide || '',
+      duration: formData.duration ?? 1,
+      guide_image: formData.guide_image || '',
+      description: formData.description || '',
+      hashtags: formData.hashtags,
+      activities: formData.activities,
+    };
+
+    createItinerary(
+      { cityId: cityIdToUse, data },
+      {
+        onSuccess: () => {
+          setMessage({ type: 'success', text: 'Itinerary created successfully!' });
+          setMode('list');
+          setFormData({});
+          messageTimerRef.current = setTimeout(() => setMessage(null), 3000);
+        },
+        onError: (err: unknown) => {
+          const apiError = err as { response?: { data?: { statusMsg?: string } } };
+          setMessage({ type: 'error', text: apiError?.response?.data?.statusMsg || 'Failed to create itinerary.' });
+        },
+      },
+    );
   };
 
   const handleHashtagsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -91,7 +155,7 @@ export const AdminItineraries = () => {
       {
         onSuccess: () => {
           setMessage({ type: 'success', text: 'Itinerary updated successfully!' });
-          setTimeout(() => {
+          messageTimerRef.current = setTimeout(() => {
             setEditingItinerary(null);
             setMessage(null);
           }, 2000);
@@ -107,6 +171,169 @@ export const AdminItineraries = () => {
   const selectedCity = cities.find((c) => c._id === selectedCityId);
 
   if (loadingCities) return <div className="text-muted-foreground py-12 text-center animate-pulse">Loading cities...</div>;
+
+  // --- Create Form ---
+  if (mode === 'create') {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center gap-2 text-sm">
+          <button type="button" onClick={handleCancel} className="text-muted-foreground hover:text-foreground transition-colors">
+            Itineraries
+          </button>
+          <span className="text-muted-foreground/40">›</span>
+          <span className="text-primary font-medium">Create Itinerary</span>
+        </div>
+
+        <h1 className="text-2xl font-bold text-foreground">Create New Itinerary</h1>
+
+        {selectedCityId && selectedCity && (
+          <p className="text-sm text-muted-foreground">
+            Creating itinerary for: <span className="font-medium text-foreground">{selectedCity.name}</span>
+          </p>
+        )}
+
+        {message && (
+          <div className={`p-4 rounded-xl border ${message.type === 'success' ? 'bg-green-500/10 border-green-500/20 text-green-700 dark:text-green-300' : 'bg-red-500/10 border-red-500/20 text-red-700 dark:text-red-300'}`}>
+            {message.text}
+          </div>
+        )}
+
+        <form onSubmit={handleCreateSubmit} className="space-y-6 rounded-2xl border border-border bg-card p-6 md:p-8">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            {/* City selector (only shown if no city is selected in list) */}
+            {!selectedCityId && (
+              <div className="space-y-2 md:col-span-2">
+                <label htmlFor="create-cityId" className="text-sm font-medium text-muted-foreground">City</label>
+                <div className="relative">
+                  <select
+                    id="create-cityId"
+                    value={createCityId}
+                    onChange={(e) => setCreateCityId(e.target.value)}
+                    className="appearance-none w-full rounded-xl border border-border bg-secondary/30 px-4 py-3 pr-9 text-foreground outline-none transition-all focus:border-primary/50 cursor-pointer"
+                  >
+                    <option value="">Select a city</option>
+                    {cities.map((city) => (
+                      <option key={city._id} value={city._id}>
+                        {city.name}
+                      </option>
+                    ))}
+                  </select>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground"><path d="m6 9 6 6 6-6"/></svg>
+                </div>
+              </div>
+            )}
+
+            <div className="space-y-2">
+              <label htmlFor="create-title" className="text-sm font-medium text-muted-foreground">Title</label>
+              <input
+                id="create-title"
+                type="text"
+                value={formData.title || ''}
+                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                className="w-full rounded-xl border border-border bg-secondary/30 px-4 py-3 text-foreground outline-none transition-all focus:border-primary/50 focus:ring-1 focus:ring-ring"
+              />
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="create-guide" className="text-sm font-medium text-muted-foreground">Guide</label>
+              <input
+                id="create-guide"
+                type="text"
+                value={formData.guide || ''}
+                onChange={(e) => setFormData({ ...formData, guide: e.target.value })}
+                className="w-full rounded-xl border border-border bg-secondary/30 px-4 py-3 text-foreground outline-none transition-all focus:border-primary/50 focus:ring-1 focus:ring-ring"
+              />
+            </div>
+            <div className="space-y-2 md:col-span-2">
+              <label htmlFor="create-description" className="text-sm font-medium text-muted-foreground">Description</label>
+              <textarea
+                id="create-description"
+                value={formData.description || ''}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                rows={4}
+                className="w-full rounded-xl border border-border bg-secondary/30 px-4 py-3 text-foreground outline-none transition-all focus:border-primary/50 focus:ring-1 focus:ring-ring resize-none"
+              />
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="create-price" className="text-sm font-medium text-muted-foreground">Price (1-5)</label>
+              <input
+                id="create-price"
+                type="number"
+                min="1"
+                max="5"
+                value={formData.price ?? ''}
+                onChange={(e) => setFormData({ ...formData, price: Number(e.target.value) })}
+                className="w-full rounded-xl border border-border bg-secondary/30 px-4 py-3 text-foreground outline-none transition-all focus:border-primary/50 focus:ring-1 focus:ring-ring"
+              />
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="create-duration" className="text-sm font-medium text-muted-foreground">Duration (Hours)</label>
+              <input
+                id="create-duration"
+                type="number"
+                min="1"
+                max="8"
+                value={formData.duration ?? ''}
+                onChange={(e) => setFormData({ ...formData, duration: Number(e.target.value) })}
+                className="w-full rounded-xl border border-border bg-secondary/30 px-4 py-3 text-foreground outline-none transition-all focus:border-primary/50 focus:ring-1 focus:ring-ring"
+              />
+            </div>
+            <div className="space-y-2 md:col-span-2">
+              <label htmlFor="create-guide_image" className="text-sm font-medium text-muted-foreground">Guide Image</label>
+              <input
+                id="create-guide_image"
+                type="text"
+                value={formData.guide_image || ''}
+                onChange={(e) => setFormData({ ...formData, guide_image: e.target.value })}
+                placeholder="https://example.com/guide.jpg"
+                className="w-full rounded-xl border border-border bg-secondary/30 px-4 py-3 text-foreground placeholder-muted-foreground outline-none transition-all focus:border-primary/50 focus:ring-1 focus:ring-ring"
+              />
+            </div>
+            <div className="space-y-2 md:col-span-2">
+              <label htmlFor="create-hashtags" className="text-sm font-medium text-muted-foreground">Hashtags (comma separated)</label>
+              <input
+                id="create-hashtags"
+                type="text"
+                value={formData.hashtags?.join(', ') || ''}
+                onChange={handleHashtagsChange}
+                placeholder="#travel, #adventure"
+                className="w-full rounded-xl border border-border bg-secondary/30 px-4 py-3 text-foreground placeholder-muted-foreground outline-none transition-all focus:border-primary/50 focus:ring-1 focus:ring-ring"
+              />
+            </div>
+            <div className="space-y-2 md:col-span-2">
+              <label htmlFor="create-activities" className="text-sm font-medium text-muted-foreground">Activities (comma separated URLs)</label>
+              <input
+                id="create-activities"
+                type="text"
+                value={formData.activities?.join(', ') || ''}
+                onChange={(e) => setFormData({ ...formData, activities: e.target.value.split(',').map((a) => a.trim()).filter((a) => a !== '') })}
+                placeholder="https://example.com/activity1, https://example.com/activity2"
+                className="w-full rounded-xl border border-border bg-secondary/30 px-4 py-3 text-foreground placeholder-muted-foreground outline-none transition-all focus:border-primary/50 focus:ring-1 focus:ring-ring"
+              />
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-3 border-t border-border pt-6">
+            <button
+              type="button"
+              onClick={handleCancel}
+              className="rounded-xl border border-border px-6 py-2.5 text-sm font-semibold text-muted-foreground transition-colors hover:bg-muted"
+              disabled={isCreating}
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="flex items-center gap-2 rounded-xl bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/90 disabled:opacity-50"
+              disabled={isCreating}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+              {isCreating ? 'Creating...' : 'Create Itinerary'}
+            </button>
+          </div>
+        </form>
+      </div>
+    );
+  }
 
   // --- Edit Form ---
   if (editingItinerary) {
@@ -163,7 +390,7 @@ export const AdminItineraries = () => {
                 type="number"
                 min="1"
                 max="5"
-                value={formData.price || 1}
+                value={formData.price ?? ''}
                 onChange={(e) => setFormData({ ...formData, price: Number(e.target.value) })}
                 className="w-full rounded-xl border border-border bg-secondary/30 px-4 py-3 text-foreground outline-none transition-all focus:border-primary/50 focus:ring-1 focus:ring-ring"
               />
@@ -174,7 +401,7 @@ export const AdminItineraries = () => {
                 type="number"
                 min="1"
                 max="8"
-                value={formData.duration || 1}
+                value={formData.duration ?? ''}
                 onChange={(e) => setFormData({ ...formData, duration: Number(e.target.value) })}
                 className="w-full rounded-xl border border-border bg-secondary/30 px-4 py-3 text-foreground outline-none transition-all focus:border-primary/50 focus:ring-1 focus:ring-ring"
               />
@@ -248,6 +475,14 @@ export const AdminItineraries = () => {
             Showing {itineraryList.length} results
           </span>
         )}
+
+        <button
+          type="button"
+          onClick={handleCreateNew}
+          className="rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
+        >
+          Create New Itinerary
+        </button>
       </div>
 
       {message && (
