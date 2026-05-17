@@ -4,9 +4,26 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router';
 import { AdminItineraries } from '../AdminItineraries';
 import type { City } from '@shared/types/api.types';
-import type { Itinerary } from '@features/itineraries/types/itineraries.types';
+import type { Itinerary, Activity } from '@features/itineraries/types/itineraries.types';
 
 // --- Datos mock ---
+
+const mockActivities: Activity[] = [
+  {
+    _id: 'act001',
+    name: 'Plaza de Mayo',
+    description: 'Visita guiada a la histórica Plaza de Mayo.',
+    image: 'https://example.com/plaza.jpg',
+    duration: 60,
+  },
+  {
+    _id: 'act002',
+    name: 'San Telmo',
+    description: 'Recorrido por el barrio de San Telmo.',
+    image: 'https://example.com/san-telmo.jpg',
+    duration: 90,
+  },
+];
 
 const mockCities: City[] = [
   {
@@ -41,7 +58,7 @@ const mockItineraries: Itinerary[] = [
     hashtags: ['#walking', '#culture'],
     guide_image: 'https://example.com/guide-maria.jpg',
     description: 'Explore vibrant Buenos Aires.',
-    activities: ['Plaza de Mayo', 'San Telmo'],
+    activities: mockActivities,
     city: '64abc123',
   },
 ];
@@ -74,10 +91,11 @@ const mockUseCityItineraries = useCityItineraries as ReturnType<typeof vi.fn>;
 const mockUseUpdateItinerary = useUpdateItinerary as ReturnType<typeof vi.fn>;
 const mockUseCreateItinerary = useCreateItinerary as ReturnType<typeof vi.fn>;
 
-function renderAdminItineraries() {
+function renderAdminItineraries(onManageActivities?: (id: string) => void) {
+  const handleManage = onManageActivities ?? vi.fn();
   return render(
     <MemoryRouter>
-      <AdminItineraries />
+      <AdminItineraries onManageActivities={handleManage} />
     </MemoryRouter>,
   );
 }
@@ -196,5 +214,36 @@ describe('AdminItineraries — create mode', () => {
 
     // Debe volver a la vista de lista (el heading principal debe ser visible)
     expect(screen.getByRole('heading', { name: /itineraries management/i })).toBeInTheDocument();
+  });
+
+  it('should NOT have activities field in creation form (migrated to AdminActivities)', async () => {
+    renderAdminItineraries();
+
+    const select = screen.getByRole('combobox');
+    const user = userEvent.setup();
+    await user.selectOptions(select, '64abc123');
+
+    const createButton = screen.getByRole('button', { name: /create new itinerary/i });
+    await user.click(createButton);
+
+    // Activities should NOT be part of the itinerary creation form
+    // -- FALLA: el componente actual aún tiene el campo activities (TDD red) --
+    expect(screen.queryByLabelText(/activities/i)).not.toBeInTheDocument();
+  });
+
+  it('should render "Manage Activities" button for each itinerary row', async () => {
+    const handleManage = vi.fn();
+    renderAdminItineraries(handleManage);
+
+    const select = screen.getByRole('combobox');
+    const user = userEvent.setup();
+    await user.selectOptions(select, '64abc123');
+
+    // -- FALLA: el botón "Manage Activities" no existe aún (TDD red) --
+    const manageButtons = screen.getAllByRole('button', { name: /manage activities/i });
+    expect(manageButtons).toHaveLength(mockItineraries.length);
+
+    await user.click(manageButtons[0]);
+    expect(handleManage).toHaveBeenCalledWith('itr001');
   });
 });

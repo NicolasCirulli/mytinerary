@@ -1,4 +1,4 @@
-import type { Itinerary } from "@features/intineraries/itineraries.types"
+import type { Itinerary } from "@features/itineraries/types/itineraries.types"
 
 interface City {
     _id: string

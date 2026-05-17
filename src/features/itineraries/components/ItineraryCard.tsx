@@ -17,7 +17,12 @@ export const ItineraryCard = ({ itinerary }: Props) => {
   // Atento al typo 'whishlist' que viene de la base de datos
   const isWishlisted = isAuthenticated && user?.whishlist?.includes(itinerary._id);
 
-  const handleWishlistClick = () => {
+  const handleCardClick = () => {
+    navigate(`/itineraries/${itinerary._id}`, { state: { itinerary } });
+  };
+
+  const handleWishlistClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (!isAuthenticated) {
       // Si no está logueado, redirigimos al login (o podríamos mostrar un toast)
       navigate("/auth/login");
@@ -30,7 +35,10 @@ export const ItineraryCard = ({ itinerary }: Props) => {
   };
 
   return (
-    <div className="bg-card p-6 rounded-lg border border-border shadow-sm text-card-foreground flex flex-col gap-4 relative">
+    <div
+      className="bg-card p-6 rounded-lg border border-border shadow-sm text-card-foreground flex flex-col gap-4 relative cursor-pointer hover:shadow-md transition-shadow"
+      onClick={handleCardClick}
+    >
       <div className="absolute top-4 right-4">
         <button
           onClick={handleWishlistClick}

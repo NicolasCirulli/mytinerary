@@ -8,6 +8,7 @@ import AdminGuard from "../Guard/AdminGuard";
 
 const CitiesPage = lazy(() => import("@pages/cities/CitiesPage"));
 const CityDetailsPage = lazy(() => import("@pages/cities/CityDetailsPage"));
+const ItineraryDetailPage = lazy(() => import("@pages/itineraries/ItineraryDetailPage"));
 const LoginPage = lazy(() => import("@pages/login/LoginPage"));
 const RegisterPage = lazy(() => import("@pages/register/RegisterPage"));
 const ProfilePage = lazy(() => import("@pages/profile/ProfilePage"));
@@ -21,6 +22,7 @@ export const router = createBrowserRouter([
       { path: "/", element: <HomePage /> },
       { path: "/cities", element: <CitiesPage /> },
       { path: "/cities/:id", element: <CityDetailsPage /> },
+      { path: "/itineraries/:id", element: <ItineraryDetailPage /> },
       {
         path: "/auth",
         Component: GuestGuard,

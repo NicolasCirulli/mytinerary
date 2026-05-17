@@ -22,6 +22,10 @@ const ChevronRight = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
 );
 
+const ActivityManageIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+);
+
 // --- Price Badge ---
 
 const priceLevels: Record<number, { label: string; className: string }> = {
@@ -41,7 +45,7 @@ const PriceBadge = ({ price }: { price: number }) => {
   );
 };
 
-export const AdminItineraries = () => {
+export const AdminItineraries = ({ onManageActivities }: { onManageActivities?: (itineraryId: string) => void }) => {
   const { cities, isPending: loadingCities } = useCities();
   const [selectedCityId, setSelectedCityId] = useState<string>('');
 
@@ -121,7 +125,6 @@ export const AdminItineraries = () => {
       guide_image: formData.guide_image || '',
       description: formData.description || '',
       hashtags: formData.hashtags,
-      activities: formData.activities,
     };
 
     createItinerary(
@@ -296,17 +299,6 @@ export const AdminItineraries = () => {
                 value={formData.hashtags?.join(', ') || ''}
                 onChange={handleHashtagsChange}
                 placeholder="#travel, #adventure"
-                className="w-full rounded-xl border border-border bg-secondary/30 px-4 py-3 text-foreground placeholder-muted-foreground outline-none transition-all focus:border-primary/50 focus:ring-1 focus:ring-ring"
-              />
-            </div>
-            <div className="space-y-2 md:col-span-2">
-              <label htmlFor="create-activities" className="text-sm font-medium text-muted-foreground">Activities (comma separated URLs)</label>
-              <input
-                id="create-activities"
-                type="text"
-                value={formData.activities?.join(', ') || ''}
-                onChange={(e) => setFormData({ ...formData, activities: e.target.value.split(',').map((a) => a.trim()).filter((a) => a !== '') })}
-                placeholder="https://example.com/activity1, https://example.com/activity2"
                 className="w-full rounded-xl border border-border bg-secondary/30 px-4 py-3 text-foreground placeholder-muted-foreground outline-none transition-all focus:border-primary/50 focus:ring-1 focus:ring-ring"
               />
             </div>
@@ -548,13 +540,24 @@ export const AdminItineraries = () => {
                       {itinerary.duration} {itinerary.duration === 1 ? 'Hour' : 'Hours'}
                     </td>
                     <td className="px-5 py-4 text-right">
-                      <button
-                        onClick={() => handleEdit(itinerary)}
-                        className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                        aria-label={`Edit ${itinerary.title}`}
-                      >
-                        <EditIcon />
-                      </button>
+                      <div className="flex items-center justify-end gap-1">
+                        <button
+                          onClick={() => handleEdit(itinerary)}
+                          className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                          aria-label={`Edit ${itinerary.title}`}
+                        >
+                          <EditIcon />
+                        </button>
+                        {onManageActivities && (
+                          <button
+                            onClick={() => onManageActivities(itinerary._id)}
+                            className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-primary"
+                            aria-label="Manage Activities"
+                          >
+                            <ActivityManageIcon />
+                          </button>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))}
