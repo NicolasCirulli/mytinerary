@@ -43,10 +43,11 @@ src/
 ├── features/                   # Feature-based modules
 │   ├── auth/                   # Authentication (login, hooks)
 │   ├── cities/                 # Cities (components, hooks, services, types)
-│   └── intineraries/           # Itineraries (types)
+│   ├── intineraries/           # Itineraries (types, services, hooks)
 ├── pages/                      # Page components (one per route)
 │   ├── home/
 │   ├── cities/
+│   ├── itineraries/            # Itinerary detail page + activities
 │   └── login/
 └── shared/                     # Shared code
     ├── api/                    # Axios client with auth interceptor
@@ -70,6 +71,11 @@ The app expects a backend at `http://localhost:8080/api` with the following endp
 
 - `GET /api/cities` — list all cities
 - `GET /api/cities/:id` — get city by ID
+- `GET /api/itineraries/city/:cityId` — list itineraries by city
+- `GET /api/itineraries/:id/activities` — list activities for an itinerary
+- `POST /api/itineraries/:id/activities` — create activity
+- `PUT /api/itineraries/:id/activities/:activityId` — update activity
+- `DELETE /api/itineraries/:id/activities/:activityId` — delete activity
 
 Authentication tokens are stored in `localStorage` and sent via `Authorization: Bearer` header.
 
@@ -84,5 +90,6 @@ Authentication tokens are stored in `localStorage` and sent via `Authorization: 
 - [x] SEO meta tags (Open Graph, Twitter Cards)
 - [x] Structured data (JSON-LD Organization)
 - [x] Accessibility (WCAG 2.2: focus-visible, skip link, reduced motion, focus trap)
-- [ ] Itinerary detail views
-- [ ] User registration
+- [x] Itinerary detail views (`/itineraries/:id`) with activities grid
+- [x] Activities management (CRUD) via admin panel
+- [x] User registration

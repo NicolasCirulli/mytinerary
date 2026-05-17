@@ -3,9 +3,10 @@ import { useNavigate } from 'react-router';
 import { useAuthStore } from '@features/auth/store/auth.store';
 import { AdminCities } from './AdminCities';
 import { AdminItineraries } from './AdminItineraries';
+import { AdminActivities } from './AdminActivities';
 import { AdminOverview } from './AdminOverview';
 
-type AdminView = 'dashboard' | 'cities' | 'itineraries';
+type AdminView = 'dashboard' | 'cities' | 'itineraries' | 'activities';
 
 // --- Icon Components ---
 
@@ -19,6 +20,12 @@ const CityIcon = ({ className = '' }: { className?: string }) => (
 
 const ItineraryIcon = ({ className = '' }: { className?: string }) => (
   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
+);
+
+const ActivityIcon = ({ className = '' }: { className?: string }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+  </svg>
 );
 
 const LogoutIcon = ({ className = '' }: { className?: string }) => (
@@ -41,6 +48,7 @@ const navItems: NavItem[] = [
   { id: 'dashboard', label: 'Dashboard', icon: DashboardIcon },
   { id: 'cities', label: 'Cities', icon: CityIcon },
   { id: 'itineraries', label: 'Itineraries', icon: ItineraryIcon },
+  { id: 'activities', label: 'Activities', icon: ActivityIcon },
 ];
 
 // --- Main Component ---
@@ -48,6 +56,7 @@ const navItems: NavItem[] = [
 export const AdminDashboard = () => {
   const [activeView, setActiveView] = useState<AdminView>('dashboard');
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [activityItineraryId, setActivityItineraryId] = useState<string>('');
   const user = useAuthStore((state) => state.user);
   const setLogout = useAuthStore((state) => state.setLogout);
   const navigate = useNavigate();
@@ -60,6 +69,11 @@ export const AdminDashboard = () => {
   const handleNavClick = (id: AdminView) => {
     setActiveView(id);
     setSidebarOpen(false);
+  };
+
+  const handleManageActivities = (itineraryId: string) => {
+    setActivityItineraryId(itineraryId);
+    setActiveView('activities');
   };
 
   return (
@@ -169,7 +183,8 @@ export const AdminDashboard = () => {
         <div className="flex-1 p-4 md:p-8 overflow-y-auto">
           {activeView === 'dashboard' && <AdminOverview onNavigate={setActiveView} />}
           {activeView === 'cities' && <AdminCities />}
-          {activeView === 'itineraries' && <AdminItineraries />}
+          {activeView === 'itineraries' && <AdminItineraries onManageActivities={handleManageActivities} />}
+          {activeView === 'activities' && <AdminActivities preselectedItineraryId={activityItineraryId} />}
         </div>
       </div>
     </div>

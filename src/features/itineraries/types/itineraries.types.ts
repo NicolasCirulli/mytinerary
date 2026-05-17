@@ -1,3 +1,11 @@
+export interface Activity {
+  _id: string;
+  name: string;
+  description: string;
+  image: string;
+  duration?: number; // minutos
+}
+
 export interface Itinerary {
   _id: string;
   title: string;
@@ -7,7 +15,7 @@ export interface Itinerary {
   hashtags: string[];
   guide_image: string; // URL
   description: string;
-  activities?: string[];
+  activities?: Activity[]; // CAMBIA de string[] a Activity[]
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   city: string | any; // ID o Ciudad populada
 }
@@ -20,5 +28,12 @@ export interface CreateItineraryData {
   hashtags?: string[];
   guide_image: string;
   description: string;
-  activities?: string[];
+  // activities REMOVIDO — se gestionan aparte
+}
+
+export interface CreateActivityData {
+  name: string;
+  description: string;
+  image: string;
+  duration?: number;
 }

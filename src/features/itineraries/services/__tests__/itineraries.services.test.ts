@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import api from '@shared/api/api';
 import { itinerariesService } from '../itineraries.services';
-import type { Itinerary, CreateItineraryData } from '../../types/itineraries.types';
+import type { Itinerary, CreateItineraryData, Activity } from '../../types/itineraries.types';
 
 vi.mock('@shared/api/api', () => ({
   default: {
@@ -12,6 +12,25 @@ vi.mock('@shared/api/api', () => ({
 }));
 
 const mockPost = api.post as ReturnType<typeof vi.fn>;
+const mockGet = api.get as ReturnType<typeof vi.fn>;
+const mockPut = api.put as ReturnType<typeof vi.fn>;
+
+const mockActivities: Activity[] = [
+  {
+    _id: 'act001',
+    name: 'Visita a la Torre Eiffel',
+    description: 'Recorrido guiado por la Torre Eiffel con acceso prioritario.',
+    image: 'https://example.com/eiffel.jpg',
+    duration: 90,
+  },
+  {
+    _id: 'act002',
+    name: 'Paseo por el Sena',
+    description: 'Crucero panorámico por el río Sena al atardecer.',
+    image: 'https://example.com/sena.jpg',
+    duration: 60,
+  },
+];
 
 const mockItinerary: Itinerary = {
   _id: '64def456',
@@ -22,7 +41,7 @@ const mockItinerary: Itinerary = {
   hashtags: ['#walking', '#culture'],
   guide_image: 'https://example.com/guide-maria.jpg',
   description: 'Explore the vibrant streets of Buenos Aires with a local guide.',
-  activities: ['Plaza de Mayo', 'San Telmo Market', 'La Boca'],
+  activities: mockActivities,
   city: '64abc123',
 };
 
@@ -34,7 +53,6 @@ const mockCreateData: CreateItineraryData = {
   hashtags: ['#walking', '#culture'],
   guide_image: 'https://example.com/guide-maria.jpg',
   description: 'Explore the vibrant streets of Buenos Aires with a local guide.',
-  activities: ['Plaza de Mayo', 'San Telmo Market', 'La Boca'],
 };
 
 const cityId = '64abc123';
