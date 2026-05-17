@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { ReactNode } from 'react';
 import { useCreateItinerary } from '../useCreateItinerary';
 import { itinerariesService } from '../../services/itineraries.services';
-import type { Itinerary, CreateItineraryData } from '../../types/itineraries.types';
+import type { Itinerary, CreateItineraryData, Activity } from '../../types/itineraries.types';
 
 vi.mock('../../services/itineraries.services', () => ({
   itinerariesService: {
@@ -16,6 +16,23 @@ vi.mock('../../services/itineraries.services', () => ({
 
 const mockCreateItinerary = itinerariesService.createItinerary as ReturnType<typeof vi.fn>;
 
+const mockActivities: Activity[] = [
+  {
+    _id: 'act001',
+    name: 'Visita a la Torre Eiffel',
+    description: 'Recorrido guiado por la Torre Eiffel con acceso prioritario.',
+    image: 'https://example.com/eiffel.jpg',
+    duration: 90,
+  },
+  {
+    _id: 'act002',
+    name: 'Paseo por el Sena',
+    description: 'Crucero panorámico por el río Sena al atardecer.',
+    image: 'https://example.com/sena.jpg',
+    duration: 60,
+  },
+];
+
 const mockItinerary: Itinerary = {
   _id: '64def456',
   title: 'Buenos Aires Walking Tour',
@@ -25,7 +42,7 @@ const mockItinerary: Itinerary = {
   hashtags: ['#walking', '#culture'],
   guide_image: 'https://example.com/guide-maria.jpg',
   description: 'Explore the vibrant streets of Buenos Aires with a local guide.',
-  activities: ['Plaza de Mayo', 'San Telmo Market', 'La Boca'],
+  activities: mockActivities,
   city: '64abc123',
 };
 
@@ -37,7 +54,6 @@ const mockCreateData: CreateItineraryData = {
   hashtags: ['#walking', '#culture'],
   guide_image: 'https://example.com/guide-maria.jpg',
   description: 'Explore the vibrant streets of Buenos Aires with a local guide.',
-  activities: ['Plaza de Mayo', 'San Telmo Market', 'La Boca'],
 };
 
 const cityId = '64abc123';
